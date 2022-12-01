@@ -2,16 +2,16 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
-	mySetting: string;
+interface AiImagesSettings {
+	API_key: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+const DEFAULT_SETTINGS: AiImagesSettings = {
+	API_key: ''
 }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class AiImages extends Plugin {
+	settings: AiImagesSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -29,6 +29,8 @@ export default class MyPlugin extends Plugin {
 		// statusBarItemEl.setText('Status Bar Text');
 
 		// This adds a simple command that can be triggered anywhere
+		
+		//Command to generate make a request based on text entered on the modal.
 		this.addCommand({
 			id: 'generate-img-from-modal-text',
 			name: 'Generate an image from text',
@@ -40,7 +42,7 @@ export default class MyPlugin extends Plugin {
 		// This adds an editor command that can perform some operation on the current editor instance
 		this.addCommand({
 			id: 'sample-editor-command',
-			name: 'Sample editor command',
+			name: 'Sample editor command123',
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				console.log(editor.getSelection());
 				editor.replaceSelection('Sample Editor Command');
@@ -106,9 +108,9 @@ class GenerationModal extends Modal {
 }
 
 class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+	plugin: AiImages;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: AiImages) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -125,10 +127,10 @@ class SampleSettingTab extends PluginSettingTab {
 			.setDesc('It\'s a secret')
 			.addText(text => text
 				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+				.setValue(this.plugin.settings.API_key)
 				.onChange(async (value) => {
 					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.API_key = value;
 					await this.plugin.saveSettings();
 				}));
 	}
