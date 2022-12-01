@@ -1,0 +1,10 @@
+{
+	"id": "obsidian-ai-images",
+	"name": "AI Images",
+	"version": "0.0.1",
+	"minAppVersion": "0.15.0",
+	"description": "This plugin aims to seamlessly integrate the generation of AI images inside of your Obsidian interface.",
+	"author": "microtower00",
+	"authorUrl": "https://github.com/microtower00",
+	"isDesktopOnly": false
+}
