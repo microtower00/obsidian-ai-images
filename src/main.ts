@@ -1,4 +1,13 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Configuration, OpenAIApi, CreateImageRequest } from "openai";
+
+const configuration = new Configuration({
+  apiKey: "",
+});
+const openai = new OpenAIApi(configuration);
+
+
+
 
 // Remember to rename these classes and interfaces!
 
@@ -15,7 +24,6 @@ export default class AiImages extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-
 		// // This creates an icon in the left ribbon.
 		// const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
 		// 	// Called when the user clicks the icon.
@@ -34,8 +42,20 @@ export default class AiImages extends Plugin {
 		this.addCommand({
 			id: 'generate-img-from-modal-text',
 			name: 'Generate an image from text',
-			callback: () => {
-				new GenerationModal(this.app).open();
+			callback: async() => {
+				console.log("Fin qua tutto bbene")
+				const response = await openai.createImage({
+					prompt: "a white siamese cat",
+					n: 1,
+					size: "1024x1024",
+				  });
+
+					console.log("Chi è che rompe")
+				  const image_url = response.data.data[0].url;
+				
+				  console.log("Fin qua tutto dioporcato")
+				console.log(image_url)
+				//new GenerationModal(this.app).open();
 			}
 		});
 		
