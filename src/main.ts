@@ -10,7 +10,7 @@ let openai:OpenAIApi;
 
 function configureAIApis(apiKey:string):void{
 	configuration = new Configuration({
-		apiKey: apiKey//"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",
+		apiKey: apiKey//"",
 	});
 	openai = new OpenAIApi(configuration);
 }
