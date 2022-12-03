@@ -1,22 +1,30 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { Configuration, OpenAIApi, CreateImageRequest } from "openai";
+import { App, DropdownComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Configuration, OpenAIApi, CreateImageRequest, CreateImageRequestSizeEnum } from "openai";
+import { type } from 'os';
+import { text } from 'stream/consumers';
 
-const configuration = new Configuration({
-  apiKey: "",
-});
-const openai = new OpenAIApi(configuration);
+let configuration: Configuration;
+
+let openai:OpenAIApi;
 
 
-
+function configureAIApis(apiKey:string):void{
+	configuration = new Configuration({
+		apiKey: apiKey//"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",
+	});
+	openai = new OpenAIApi(configuration);
+}
 
 // Remember to rename these classes and interfaces!
 
 interface AiImagesSettings {
 	API_key: string;
+	img_sz: CreateImageRequestSizeEnum;
 }
 
 const DEFAULT_SETTINGS: AiImagesSettings = {
-	API_key: ''
+	API_key: '',
+	img_sz: '512x512'
 }
 
 export default class AiImages extends Plugin {
@@ -24,50 +32,28 @@ export default class AiImages extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		// // This creates an icon in the left ribbon.
-		// const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-		// 	// Called when the user clicks the icon.
-		// 	new Notice('This is a notice!');
-		// });
-		// Perform additional things with the ribbon
-		// ribbonIconEl.addClass('my-plugin-ribbon-class');
-
-		// // This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		// const statusBarItemEl = this.addStatusBarItem();
-		// statusBarItemEl.setText('Status Bar Text');
-
-		// This adds a simple command that can be triggered anywhere
+		console.log("AI Images: settings loaded")
+		configureAIApis(this.settings.API_key)
 		
 		//Command to generate make a request based on text entered on the modal.
 		this.addCommand({
 			id: 'generate-img-from-modal-text',
 			name: 'Generate an image from text',
 			callback: async() => {
-				console.log("Fin qua tutto bbene")
+				console.log("AI Images: running generate-img-from-modal-text")
 				const response = await openai.createImage({
 					prompt: "a white siamese cat",
 					n: 1,
-					size: "1024x1024",
+					size: this.settings.img_sz,
 				  });
 
-					console.log("Chi è che rompe")
-				  const image_url = response.data.data[0].url;
-				
-				  console.log("Fin qua tutto dioporcato")
+				console.log(response)
+				const image_url = response.data.data[0].url;
 				console.log(image_url)
 				//new GenerationModal(this.app).open();
 			}
 		});
-		
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command123',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
+
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
 		this.addCommand({
 			id: 'generate-img-from-last-sentence',
@@ -86,7 +72,7 @@ export default class AiImages extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new AiImagesSettingsTab(this.app, this));
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
@@ -119,15 +105,18 @@ class GenerationModal extends Modal {
 	onOpen() {
 		const {contentEl} = this;
 		contentEl.setText('Insert the prompt to generate an image');
+		contentEl.createEl('input',{attr: {["type"]:"text",["id"]:"generation-modal-text-input"}})
+		const confirm = contentEl.createEl('input',{attr: {	["type"]:"button",
+															["id"]:"generation-modal-confirm",
+															['value']:'Generate'}})
 	}
-
 	onClose() {
 		const {contentEl} = this;
 		contentEl.empty();
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class AiImagesSettingsTab extends PluginSettingTab {
 	plugin: AiImages;
 
 	constructor(app: App, plugin: AiImages) {
@@ -140,18 +129,37 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+		containerEl.createEl('h2', {text: 'DALLE Generation Settings'});
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
+			.setName('OpenAI API key')
+			.setDesc('If you dont\'t have one get it at https://beta.openai.com/account/api-keys')
 			.addText(text => text
 				.setPlaceholder('Enter your secret')
 				.setValue(this.plugin.settings.API_key)
 				.onChange(async (value) => {
-					console.log('Secret: ' + value);
+					// console.log('Secret: ' + value);
 					this.plugin.settings.API_key = value;
 					await this.plugin.saveSettings();
+					configureAIApis(value)
 				}));
+
+		// Image size setting
+		// da fare meglio, usando .addOptions e una lista ma ero pigro e volevo buttare su features
+		new Setting(containerEl)
+			.setName('Generated image size')
+			.setDesc('Size of the image generated using DALLE-2')
+			// Sistema sta merda bro
+			.addDropdown(DropdownComponent => DropdownComponent
+				.addOption("1024x1024","1024x1024")
+				.addOption("512x512","512x512")
+				.addOption("256x256","256x256")
+				.setValue(this.plugin.settings.img_sz)
+				.onChange(async(value)=>{
+					console.log("AI Images: image generation size changed to "+value);
+					this.plugin.settings.img_sz=value as CreateImageRequestSizeEnum;
+					await this.plugin.saveSettings();
+				}))
+				
 	}
 }
