@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-ai-images1",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "obsidian-ai-images",
+	"version": "0.1.0",
+	"description": "This plugin seamlessly integrates the generation of AI images inside of your Obsidian interface.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
