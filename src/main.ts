@@ -1,5 +1,5 @@
 import ImgRetriever from 'imgretriever';
-import { App, MarkdownView, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { Configuration, OpenAIApi, CreateImageRequestSizeEnum } from "openai";
 
 let configuration: Configuration;
@@ -33,29 +33,37 @@ export default class AiImages extends Plugin {
 		console.log("AI Images: settings loaded")
 		this.retriever = new ImgRetriever(this)
 		//Command to generate make a request based on text entered on the modal.
-		this.addCommand({
-			id: 'generate-img-from-modal-text',
-			name: 'Generate an image from text',
-			callback: async() => {
-				console.log("AI Images: running generate-img-from-modal-text")
+		// this.addCommand({
+		// 	id: 'generate-img-from-modal-text',
+		// 	name: 'Generate an image from text',
+		// 	editorCallback: async() => {
+		// 		console.log("AI Images: running generate-img-from-modal-text")
 			
-				const image_url = this.retriever.generate("Berlin in 2025 if Germany won ww2 and conquered the world, wolfenstein style")
-				console.log(image_url)
-				new GenerationModal(this.app).open();
-			}
-		});
-
+		// 		const image_url = this.retriever.generate("Berlin in 2025 if Germany won ww2 and conquered the world, wolfenstein style")
+		// 		console.log(image_url)
+		// 		new GenerationModal(this.app).open();
+		// 	}
+		// });
+		
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
 		this.addCommand({
-			id: 'generate-img-from-last-sentence',
-			name: 'Generate an image from the last sentence you typed',
-			editorCheckCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+			id: 'generate-img-from-selection',
+			name: 'Generate an image from your text selection',
+			editorCheckCallback: (checking: boolean, editor:Editor) => {
+				//Check that you are in an editor and that you have text selected.
+				//const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+				const prompt = editor.getSelection()
 
-				if (markdownView) {
+				if (editor.somethingSelected()) {
 					if (!checking) {
-						new GenerationModal(this.app).open();
+						let img_url:string = ""
+
+						this.retriever.generate(prompt).then((ret)=>{
+							img_url=ret as string
+
+							console.log(img_url)
+							editor.replaceSelection("![|"+this.settings.img_sz.substring(0,3)+"]("+img_url+")")
+						});
 					}
 					return true;
 				}
