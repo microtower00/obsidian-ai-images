@@ -1,7 +1,6 @@
-import { App, DropdownComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import ImgRetriever from 'imgretriever';
+import { App, MarkdownView, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { Configuration, OpenAIApi, CreateImageRequestSizeEnum } from "openai";
-import { type } from 'os';
-import { text } from 'stream/consumers';
 
 let configuration: Configuration;
 
@@ -15,8 +14,6 @@ function configureAIApis(apiKey:string):void{
 	openai = new OpenAIApi(configuration);
 }
 
-// Remember to rename these classes and interfaces!
-
 interface AiImagesSettings {
 	API_key: string;
 	img_sz: CreateImageRequestSizeEnum;
@@ -29,24 +26,20 @@ const DEFAULT_SETTINGS: AiImagesSettings = {
 
 export default class AiImages extends Plugin {
 	settings: AiImagesSettings;
+	retriever:ImgRetriever;
 
 	async onload() {
 		await this.loadSettings();
 		console.log("AI Images: settings loaded")
-		configureAIApis(this.settings.API_key)
-		
+		this.retriever = new ImgRetriever(this)
 		//Command to generate make a request based on text entered on the modal.
 		this.addCommand({
 			id: 'generate-img-from-modal-text',
 			name: 'Generate an image from text',
 			callback: async() => {
 				console.log("AI Images: running generate-img-from-modal-text")
-				const response = await openai.createImage({
-					prompt: "Un albero nato e cresciuto completamente cacato",
-					n: 1,
-					size: this.settings.img_sz
-				});
-				const image_url = response.data.data[0].url;
+			
+				const image_url = this.retriever.generate("Berlin in 2025 if Germany won ww2 and conquered the world, wolfenstein style")
 				console.log(image_url)
 				new GenerationModal(this.app).open();
 			}
