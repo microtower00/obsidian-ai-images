@@ -1,14 +1,22 @@
+import AiImages from "main";
 import { Configuration, OpenAIApi } from "openai";
 
-const configuration = new Configuration({
-    organization: "org-bqPest2ZqUfwOKNcExlNcCct",
-    apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-const response = await openai.listEngines();
+export default class ImgRetriever{
+    plugin:AiImages
+    openai:OpenAIApi
 
-export class ImgRetriever{
-    API_key:string
+    constructor(plugin:AiImages){
+        this.plugin=plugin
+        this.openai = new OpenAIApi(new Configuration({apiKey: this.plugin.settings.API_key}));
+    }
 
+    async generate(prompt:string, params: any = this.plugin.settings){
+        const response = await this.openai.createImage({
+            prompt: prompt,
+            n: 1,
+            size: this.plugin.settings.img_sz
+        });
+        return response.data.data[0].url;
+    }
 
 }
