@@ -1,5 +1,5 @@
 import { App, DropdownComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { Configuration, OpenAIApi, CreateImageRequest, CreateImageRequestSizeEnum } from "openai";
+import { Configuration, OpenAIApi, CreateImageRequestSizeEnum } from "openai";
 import { type } from 'os';
 import { text } from 'stream/consumers';
 
@@ -42,15 +42,13 @@ export default class AiImages extends Plugin {
 			callback: async() => {
 				console.log("AI Images: running generate-img-from-modal-text")
 				const response = await openai.createImage({
-					prompt: "a white siamese cat",
+					prompt: "Un albero nato e cresciuto completamente cacato",
 					n: 1,
-					size: this.settings.img_sz,
-				  });
-
-				console.log(response)
+					size: this.settings.img_sz
+				});
 				const image_url = response.data.data[0].url;
 				console.log(image_url)
-				//new GenerationModal(this.app).open();
+				new GenerationModal(this.app).open();
 			}
 		});
 
@@ -98,6 +96,8 @@ export default class AiImages extends Plugin {
 }
 
 class GenerationModal extends Modal {
+	input:HTMLElement
+
 	constructor(app: App) {
 		super(app);
 	}
@@ -105,11 +105,17 @@ class GenerationModal extends Modal {
 	onOpen() {
 		const {contentEl} = this;
 		contentEl.setText('Insert the prompt to generate an image');
-		contentEl.createEl('input',{attr: {["type"]:"text",["id"]:"generation-modal-text-input"}})
+		const input = contentEl.createEl('input',{attr: {["type"]:"text",["id"]:"generation-modal-text-input"}})
 		const confirm = contentEl.createEl('input',{attr: {	["type"]:"button",
 															["id"]:"generation-modal-confirm",
 															['value']:'Generate'}})
+
+		confirm?.addEventListener('click', function readInputText(){
+			console.log('button pressed, calling generateImg with prompt: '+input.value)
+			generateImg(input.value, CreateImageRequestSizeEnum._256x256)
+		})
 	}
+
 	onClose() {
 		const {contentEl} = this;
 		contentEl.empty();
@@ -163,3 +169,15 @@ class AiImagesSettingsTab extends PluginSettingTab {
 				
 	}
 }
+
+async function generateImg(promptString: string, image_sz:CreateImageRequestSizeEnum): Promise<string | undefined> {
+	const response = await openai.createImage({
+		prompt: promptString,
+		n: 1,
+		size: image_sz
+	});
+	const image_url = response.data.data[0].url;
+	console.log(image_url)
+	return image_url
+}
+
