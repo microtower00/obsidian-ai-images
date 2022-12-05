@@ -10,3 +10,9 @@ Insert your API key in the plugin settings and you will be good to go!
 While typing in editor mode, select some text you wish to use as a prompt for the generation of an image. You can then use the provided command by pressing ```Ctrl+P``` and searching for 'Generate an image from your text selection'.
 
 A link to the generated image will replace the prompt.
+
+## Development
+This plugin was developed as a personal project and was made for fun. I will upgrading as time and creativity allow me. In the meantime if you have any suggestion, hit me up, open issues, or contribute to the project.
+
+---
+This plugin works by requesting image generations to the [DALL-E APIs](https://beta.openai.com/docs/introduction)
