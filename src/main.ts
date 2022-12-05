@@ -1,19 +1,7 @@
 import ImgRetriever from 'imgretriever';
 import AiImagesSettingsTab from 'settings'
-import { App, Editor, MarkdownView, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { Configuration, OpenAIApi, CreateImageRequestSizeEnum } from "openai";
-
-let configuration: Configuration;
-
-let openai:OpenAIApi;
-
-
-function configureAIApis(apiKey:string):void{
-	configuration = new Configuration({
-		apiKey: apiKey//"",
-	});
-	openai = new OpenAIApi(configuration);
-}
+import { Editor, Plugin } from 'obsidian';
+import { CreateImageRequestSizeEnum } from "openai";
 
 interface AiImagesSettings {
 	API_key: string;
@@ -45,7 +33,7 @@ export default class AiImages extends Plugin {
 
 				if (editor.somethingSelected()) {
 					if (!checking) {
-						let img_url:string = ""
+						let img_url:string
 
 						this.retriever.generate(prompt).then((ret)=>{
 							img_url=ret as string
@@ -85,28 +73,28 @@ export default class AiImages extends Plugin {
 	}
 }
 
-class GenerationModal extends Modal {
-	input:HTMLElement
+// class GenerationModal extends Modal {
+// 	input:HTMLElement
 
-	constructor(app: App) {
-		super(app);
-	}
+// 	constructor(app: App) {
+// 		super(app);
+// 	}
 
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Insert the prompt to generate an image');
-		const input = contentEl.createEl('input',{attr: {["type"]:"text",["id"]:"generation-modal-text-input"}})
-		const confirm = contentEl.createEl('input',{attr: {	["type"]:"button",
-															["id"]:"generation-modal-confirm",
-															['value']:'Generate'}})
+// 	onOpen() {
+// 		const {contentEl} = this;
+// 		contentEl.setText('Insert the prompt to generate an image');
+// 		const input = contentEl.createEl('input',{attr: {["type"]:"text",["id"]:"generation-modal-text-input"}})
+// 		const confirm = contentEl.createEl('input',{attr: {	["type"]:"button",
+// 															["id"]:"generation-modal-confirm",
+// 															['value']:'Generate'}})
 
-		confirm?.addEventListener('click', function readInputText(){
-			console.log('Button pressed')
-		})
-	}
+// 		confirm?.addEventListener('click', function readInputText(){
+// 			console.log('Button pressed')
+// 		})
+// 	}
 
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
+// 	onClose() {
+// 		const {contentEl} = this;
+// 		contentEl.empty();
+// 	}
+// }
