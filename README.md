@@ -4,7 +4,7 @@ This plugin aims to seamlessly integrate the generation of AI images inside of y
 ---
 ## Installation
 At the moment, the plugin is still not published on the obsidian plugin markateplace, so you are going to need to install it yourself.
-Inside your vault, create a folder ```.plugin/obsidian-ai-images```. Paste the release files inside and you are good to go!
+Inside your vault, create a folder ```.obsidian/plugins/obsidian-ai-images```. Paste the release files inside and you are good to go!
 ## Configuration
 To use this plugin you need OpenAI API keys. You can generate them [here](https://beta.openai.com/account/api-keys) if you don't already have them.
 Insert your API key in the plugin settings and you will be good to go!
