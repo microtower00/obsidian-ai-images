@@ -33,26 +33,14 @@ export default class AiImages extends Plugin {
 		await this.loadSettings();
 		console.log("AI Images: settings loaded")
 		this.retriever = new ImgRetriever(this)
-		//Command to generate make a request based on text entered on the modal.
-		// this.addCommand({
-		// 	id: 'generate-img-from-modal-text',
-		// 	name: 'Generate an image from text',
-		// 	editorCallback: async() => {
-		// 		console.log("AI Images: running generate-img-from-modal-text")
-			
-		// 		const image_url = this.retriever.generate("Berlin in 2025 if Germany won ww2 and conquered the world, wolfenstein style")
-		// 		console.log(image_url)
-		// 		new GenerationModal(this.app).open();
-		// 	}
-		// });
-		
+
+		console.log('mo addo comando')
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
 		this.addCommand({
 			id: 'generate-img-from-selection',
 			name: 'Generate an image from your text selection',
 			editorCheckCallback: (checking: boolean, editor:Editor) => {
 				//Check that you are in an editor and that you have text selected.
-				//const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
 				const prompt = editor.getSelection()
 
 				if (editor.somethingSelected()) {
@@ -122,16 +110,3 @@ class GenerationModal extends Modal {
 		contentEl.empty();
 	}
 }
-
-
-// async function generateImg(promptString: string, image_sz:CreateImageRequestSizeEnum): Promise<string | undefined> {
-// 	const response = await openai.createImage({
-// 		prompt: promptString,
-// 		n: 1,
-// 		size: image_sz
-// 	});
-// 	const image_url = response.data.data[0].url;
-// 	console.log(image_url)
-// 	return image_url
-// }
-

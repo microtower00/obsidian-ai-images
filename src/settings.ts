@@ -11,6 +11,7 @@ export default class AiImagesSettingsTab extends PluginSettingTab {
 	}
 
 	display(): void {
+		console.log('Showing settings tab')
 		const {containerEl} = this;
 
 		containerEl.empty();
@@ -39,7 +40,9 @@ export default class AiImagesSettingsTab extends PluginSettingTab {
 				.addOption("1024x1024","1024x1024")
 				.addOption("512x512","512x512")
 				.addOption("256x256","256x256")
+
 				.setValue(this.plugin.settings.img_sz)
+
 				.onChange(async(value)=>{
 					console.log("AI Images: image generation size changed to "+value);
 					this.plugin.settings.img_sz=value as CreateImageRequestSizeEnum;
