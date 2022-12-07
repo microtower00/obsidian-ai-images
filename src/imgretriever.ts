@@ -11,12 +11,28 @@ export default class ImgRetriever{
     }
 
     async generate(prompt:string, params: any = this.plugin.settings){
-        const response = await this.openai.createImage({
-            prompt: prompt,
-            n: 1,
-            size: this.plugin.settings.img_sz
-        });
-        return response.data.data[0].url;
+        try{
+            const response = await this.openai.createImage({
+                prompt: prompt,
+                n: 1,
+                size: this.plugin.settings.img_sz
+            });
+
+            return response.data.data[0].url;
+
+        } catch(error){
+            if(error.response){
+                console.log(error.response.status);
+                console.log(error.response.data);
+            } else {
+                console.log(error.message);
+            }
+        }
+    }
+
+    async download(prompt:string, params: any = this.plugin.settings, filepath:string){
+        const img_url = this.generate(prompt,params)
+        
     }
 
 }
