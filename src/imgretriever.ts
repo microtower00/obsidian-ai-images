@@ -1,6 +1,5 @@
 import AiImages from "main";
 import { Configuration, OpenAIApi } from "openai";
-
 import got from "got";
 
 export default class ImgRetriever{
@@ -13,22 +12,16 @@ export default class ImgRetriever{
     }
 
     async generate(prompt:string, params: any = this.plugin.settings){
-        try{
-            const response = await this.openai.createImage({
-                prompt: prompt,
-                n: 1,
-                size: this.plugin.settings.img_sz
-            });
+        const response = await this.openai.createImage({
+            prompt: prompt,
+            n: 1,
+            size: this.plugin.settings.img_sz
+        });
 
+        if(!response.data.data[0].url){
+            throw(response.data.data[0])
+        }else{
             return response.data.data[0].url;
-
-        } catch(error){
-            if(error.response){
-                console.log(error.response.status);
-                console.log(error.response.data);
-            } else {
-                console.log(error.message);
-            }
         }
     }
     
