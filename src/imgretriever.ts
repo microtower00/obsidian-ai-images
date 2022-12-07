@@ -1,6 +1,8 @@
 import AiImages from "main";
 import { Configuration, OpenAIApi } from "openai";
 
+import got from "got";
+
 export default class ImgRetriever{
     plugin:AiImages
     openai:OpenAIApi
@@ -29,10 +31,10 @@ export default class ImgRetriever{
             }
         }
     }
-
-    async download(prompt:string, params: any = this.plugin.settings, filepath:string){
-        const img_url = this.generate(prompt,params)
-        
+    
+    async downloadImage(url: string): Promise<ArrayBuffer> {
+        const res = await got(url, { responseType: "buffer" });
+        return res.body;
     }
 
 }
