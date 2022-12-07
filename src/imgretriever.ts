@@ -1,5 +1,6 @@
 import AiImages from "main";
 import { Configuration, OpenAIApi } from "openai";
+import got from "got";
 
 export default class ImgRetriever{
     plugin:AiImages
@@ -16,7 +17,17 @@ export default class ImgRetriever{
             n: 1,
             size: this.plugin.settings.img_sz
         });
-        return response.data.data[0].url;
+
+        if(!response.data.data[0].url){
+            throw(response.data.data[0])
+        }else{
+            return response.data.data[0].url;
+        }
+    }
+    
+    async downloadImage(url: string): Promise<ArrayBuffer> {
+        const res = await got(url, { responseType: "buffer" });
+        return res.body;
     }
 
 }
