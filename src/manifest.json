@@ -6,5 +6,5 @@
 	"description": "This plugin seamlessly integrates the generation of AI images inside of your Obsidian interface.",
 	"author": "microtower00",
 	"authorUrl": "https://github.com/microtower00",
-	"isDesktopOnly": false
+	"isDesktopOnly": true
 }
