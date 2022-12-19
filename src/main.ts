@@ -83,7 +83,7 @@ export default class AiImages extends Plugin {
 			const file = this.app.workspace.getActiveFile();
 
 			if(file){
-				const imgPath:string = this.settings.attachments_path+"/"+(Date.now() as string)+".png"
+				const imgPath:string = this.settings.attachments_path+"/"+(Date.now() as unknown as string)+".png"
 				this.retriever.downloadImage(imgUrl).then((bytes:any)=>{
 					saveFile(this.app,imgPath,bytes)
 				})
