@@ -30,6 +30,12 @@ export default class AiImages extends Plugin {
 		this.addCommand({
 			id: 'generate-img-from-selection',
 			name: 'Generate an image from your text selection',
+			hotkeys: [
+				{
+					modifiers: ['Mod', 'Shift'],
+					key: 'G',
+				},
+			],
 			editorCheckCallback: (checking: boolean, editor:Editor) => {
 				//Check that you are in an editor and that you have text selected.
 
@@ -68,6 +74,7 @@ export default class AiImages extends Plugin {
 		await this.saveData(this.settings);
 	}
 	async generateImage(prompt:string, editor:Editor){
+		console.log('Generating image...')
 		try{
 			let res = await this.retriever.generate(prompt)
 			let imgUrl=res
@@ -76,7 +83,6 @@ export default class AiImages extends Plugin {
 			if(file){
 				const imgPath:string = (Date.now() as string)+".png"
 				this.retriever.downloadImage(imgUrl).then((bytes:any)=>{
-					console.log("tutto bene")
 					saveFile(this.app,imgPath,bytes)
 				})
 				const imgObsidianUrl = "![|"+this.settings.img_sz.substring(0,3)+"]("+imgPath+")";
