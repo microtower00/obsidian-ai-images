@@ -8,11 +8,13 @@ import { displayError} from 'displayError'
 interface AiImagesSettings {
 	API_key: string;
 	img_sz: CreateImageRequestSizeEnum;
+	keep_prompt:boolean;
 }
 
 const DEFAULT_SETTINGS: AiImagesSettings = {
 	API_key: '',
-	img_sz: '512x512'
+	img_sz: '512x512',
+	keep_prompt: false
 }
 
 export default class AiImages extends Plugin {
@@ -20,7 +22,6 @@ export default class AiImages extends Plugin {
 	retriever:ImgRetriever;
 
 	async onload() {
-		displayError("Testone")
 		await this.loadSettings();
 		console.log("AI Images: settings loaded")
 		this.retriever = new ImgRetriever(this)
@@ -78,7 +79,11 @@ export default class AiImages extends Plugin {
 					console.log("tutto bene")
 					saveFile(this.app,imgPath,bytes)
 				})
-				editor.replaceSelection("![|"+this.settings.img_sz.substring(0,3)+"]("+imgPath+")")
+				const imgObsidianUrl = "![|"+this.settings.img_sz.substring(0,3)+"]("+imgPath+")";
+				if(!this.settings.keep_prompt)
+					editor.replaceSelection(imgObsidianUrl)
+				else
+					editor.replaceSelection(prompt+"\n"+imgObsidianUrl)
 			}
 		}catch(e){
 			displayError(e)
