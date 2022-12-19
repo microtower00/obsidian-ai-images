@@ -9,12 +9,14 @@ interface AiImagesSettings {
 	API_key: string;
 	img_sz: CreateImageRequestSizeEnum;
 	keep_prompt:boolean;
+	attachments_path: string;
 }
 
 const DEFAULT_SETTINGS: AiImagesSettings = {
 	API_key: '',
 	img_sz: '512x512',
-	keep_prompt: false
+	keep_prompt: false,
+	attachments_path: ""
 }
 
 export default class AiImages extends Plugin {
@@ -81,7 +83,7 @@ export default class AiImages extends Plugin {
 			const file = this.app.workspace.getActiveFile();
 
 			if(file){
-				const imgPath:string = (Date.now() as string)+".png"
+				const imgPath:string = this.settings.attachments_path+"/"+(Date.now() as string)+".png"
 				this.retriever.downloadImage(imgUrl).then((bytes:any)=>{
 					saveFile(this.app,imgPath,bytes)
 				})
