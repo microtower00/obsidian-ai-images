@@ -1,4 +1,5 @@
 import type { App } from "obsidian";
+import { normalizePath } from "obsidian";
 
 export async function saveFile(
   app: App,
@@ -6,7 +7,8 @@ export async function saveFile(
   data: ArrayBuffer
 ) {
   try {
-    const created = await app.vault.createBinary(outputPath, data);
+    const finalPath = normalizePath(outputPath)
+    const created = await app.vault.createBinary(finalPath, data);
     return created;
   } catch (error) {
     if (!error.message.contains("File already exists")) {
