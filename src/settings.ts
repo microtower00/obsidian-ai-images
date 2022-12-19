@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting, ToggleComponent } from "obsidian";
 import AiImages from "main";
 import { CreateImageRequestSizeEnum } from "openai";
 
@@ -47,7 +47,19 @@ export default class AiImagesSettingsTab extends PluginSettingTab {
 					console.log("AI Images: image generation size changed to "+value);
 					this.plugin.settings.img_sz=value as CreateImageRequestSizeEnum;
 					await this.plugin.saveSettings();
-				}))
+				}));
+		
+				new Setting(containerEl)
+					.setName('Keep prompt after generation')
+					.setDesc('Select this if you want the generation prompt to be kept in the editor after the generation, otherwise it will disappear')
+					.addToggle(ToggleComponent => ToggleComponent
+						.setValue(this.plugin.settings.keep_prompt)
+						.onChange(async(value)=>{
+							console.log("AI Images: keep prompt in editor after generation changed to "+value);
+							this.plugin.settings.keep_prompt=value
+							await this.plugin.saveSettings();
+						}))
+						
 				
 	}
 }
