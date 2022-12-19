@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, ToggleComponent } from "obsidian";
+import { App, PluginSettingTab, Setting, TextAreaComponent, ToggleComponent } from "obsidian";
 import AiImages from "main";
 import { CreateImageRequestSizeEnum } from "openai";
 
@@ -57,6 +57,17 @@ export default class AiImagesSettingsTab extends PluginSettingTab {
 						.onChange(async(value)=>{
 							console.log("AI Images: keep prompt in editor after generation changed to "+value);
 							this.plugin.settings.keep_prompt=value
+							await this.plugin.saveSettings();
+						}))
+				
+				new Setting(containerEl)
+					.setName('Generated image folder')
+					.setDesc('If you wish to store the genereated images in a subfolder you can select it here.')
+					.addTextArea(TextAreaComponent => TextAreaComponent
+						.setValue(this.plugin.settings.attachments_path)
+						.onChange(async(value)=>{
+							console.log("AI Images: attachments folder changed to "+value);
+							this.plugin.settings.attachments_path=value
 							await this.plugin.saveSettings();
 						}))
 						
