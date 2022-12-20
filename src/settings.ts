@@ -63,7 +63,7 @@ export default class AiImagesSettingsTab extends PluginSettingTab {
 				new Setting(containerEl)
 					.setName('Generated image folder')
 					.setDesc('If you wish to store the genereated images in a subfolder you can select it here.')
-					.addTextArea(TextAreaComponent => TextAreaComponent
+					.addText(TextComponent => TextComponent
 						.setValue(this.plugin.settings.attachments_path)
 						.onChange(async(value)=>{
 							console.log("AI Images: attachments folder changed to "+value);
