@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-ai-images",
-	"version": "0.2.1",
+	"version": "0.3.5",
 	"description": "This plugin seamlessly integrates the generation of AI images inside of your Obsidian interface.",
 	"main": "main.js",
 	"scripts": {
@@ -27,7 +27,7 @@
 		"express": "^4.18.2",
 		"got": "^12.5.3",
 		"image-downloader": "^4.3.0",
-		"node": "^19.2.0",
+		"node": "^19.3.0",
 		"obsidian-http-request": "^1.5.0",
 		"openai": "^3.1.0"
 	}
