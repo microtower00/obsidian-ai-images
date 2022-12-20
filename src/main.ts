@@ -3,7 +3,7 @@ import AiImagesSettingsTab from 'settings'
 import { Editor, Plugin } from 'obsidian';
 import { CreateImageRequestSizeEnum } from "openai";
 import { saveFile } from 'saveFile';
-import { displayError} from 'displayError'
+import { displayNotice} from 'displayError'
 
 interface AiImagesSettings {
 	API_key: string;
@@ -77,6 +77,7 @@ export default class AiImages extends Plugin {
 	}
 	async generateImage(prompt:string, editor:Editor){
 		console.log('Generating image...')
+		displayNotice("Retrieving image...")
 		try{
 			let res = await this.retriever.generate(prompt)
 			let imgUrl=res
@@ -86,6 +87,7 @@ export default class AiImages extends Plugin {
 				const imgPath:string = this.settings.attachments_path+"/"+(Date.now() as unknown as string)+".png"
 				this.retriever.downloadImage(imgUrl).then((bytes:any)=>{
 					saveFile(this.app,imgPath,bytes)
+					displayNotice("Image saved!")
 				})
 				const imgObsidianUrl = "![|"+this.settings.img_sz.substring(0,3)+"]("+imgPath+")";
 				if(!this.settings.keep_prompt)
@@ -94,7 +96,7 @@ export default class AiImages extends Plugin {
 					editor.replaceSelection(prompt+"\n"+imgObsidianUrl)
 			}
 		}catch(e){
-			displayError(e)
+			displayNotice(e)
 		}
 	}
 }
