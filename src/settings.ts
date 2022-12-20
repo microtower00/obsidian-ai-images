@@ -2,7 +2,8 @@ import { App, PluginSettingTab, Setting, TextAreaComponent, ToggleComponent } fr
 import AiImages from "main";
 import { CreateImageRequestSizeEnum } from "openai";
 
-export default class AiImagesSettingsTab extends PluginSettingTab {
+
+export class AiImagesSettingsTab extends PluginSettingTab {
 	plugin: AiImages;
 
 	constructor(app: App, plugin: AiImages) {
@@ -73,4 +74,18 @@ export default class AiImagesSettingsTab extends PluginSettingTab {
 						
 				
 	}
+}
+
+export interface AiImagesSettings {
+	API_key: string;
+	img_sz: CreateImageRequestSizeEnum;
+	keep_prompt:boolean;
+	attachments_path: string;
+}
+
+export const DEFAULT_SETTINGS: AiImagesSettings = {
+	API_key: '',
+	img_sz: '512x512',
+	keep_prompt: false,
+	attachments_path: ""
 }
