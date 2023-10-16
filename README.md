@@ -2,6 +2,7 @@
 This plugin aims to seamlessly integrate the generation of AI images inside of your Obsidian interface.
 
 ---
+## !!Developement is currently HALTED, since i do not own an API key that allows me to continue, nor I can afford one!!
 ## Installation
 At the moment, the plugin is still not published on the obsidian plugin markateplace, so you are going to need to install it yourself.
 Inside your vault, create a folder ```.obsidian/plugins/obsidian-ai-images```. Paste the release files inside the folder and you are good to go!
